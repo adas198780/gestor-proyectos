@@ -20,6 +20,9 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
+
 Route::middleware('auth')->group(function () {
-    Route::resource('projects.participants', ProjectParticipantController::class)->only(['store', 'update', 'destroy']);
+    Route::resource('projects', ProjectController::class);
+    Route::resource('projects.participants', ProjectParticipantController::class)
+        ->only(['store', 'update', 'destroy']);
 });

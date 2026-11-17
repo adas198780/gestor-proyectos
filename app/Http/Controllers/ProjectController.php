@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ProjectController extends Controller
@@ -32,12 +33,17 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-   public function show(Project $project)
-    {
-        $project->load('owner', 'participants');
+public function show(Project $project)
+{
+    $project->load('owner', 'participants');
 
-        return view('projects.show', compact('project'));
-    }
+    $availableUsers = User::where('id', '!=', $project->user_id)
+        ->whereNotIn('id', $project->participants->pluck('id'))
+        ->orderBy('name')
+        ->get();
+
+    return view('projects.show', compact('project', 'availableUsers'));
+}
 
     public function edit(Project $project)
     {
