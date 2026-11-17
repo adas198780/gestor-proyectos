@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
     {
@@ -47,11 +48,14 @@ public function show(Project $project)
 
     public function edit(Project $project)
     {
+        Gate::authorize('update', $project);
         return view('projects.edit', compact('project'));
     }
 
     public function update(Request $request, Project $project)
     {
+        Gate::authorize('update', $project);
+
         $project->update($this->validateProject($request));
 
         return redirect()->route('projects.show', $project);
@@ -59,6 +63,8 @@ public function show(Project $project)
 
     public function destroy(Project $project)
     {
+
+        Gate::authorize('delete', $project);
         $project->delete();
 
         return redirect()->route('projects.index');
