@@ -11,7 +11,9 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             @forelse ($projects as $project)
                 <div class="bg-white p-6 shadow sm:rounded-lg">
-                    <h3 class="font-semibold text-lg">{{ $project->title }}</h3>
+                    <h3 class="font-semibold text-lg">
+                        <a href="{{ route('projects.show', $project) }}" class="hover:underline">{{ $project->title }}</a>
+                    </h3>
                     <p class="text-sm text-gray-500">Propietario: {{ $project->owner->name }}</p>
                     <p class="text-sm text-gray-500">Estado: {{ $project->status }}</p>
                 </div>

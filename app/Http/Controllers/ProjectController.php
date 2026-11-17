@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
-    class ProjectController extends Controller
+class ProjectController extends Controller
     {
         /**
          * Display a listing of the resource.
@@ -24,14 +24,7 @@ use Illuminate\Http\Request;
 
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'deadline' => 'nullable|date',
-            'status' => 'required|in:pendiente,en curso,completado',
-        ]);
-
-        $request->user()->ownedProjects()->create($validated);
+        $request->user()->ownedProjects()->create($this->validateProject($request));
 
         return redirect()->route('projects.index');
     }
@@ -39,32 +32,39 @@ use Illuminate\Http\Request;
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+   public function show(Project $project)
     {
-        //
+        $project->load('owner', 'participants');
+
+        return view('projects.show', compact('project'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Project $project)
     {
-        //
+        return view('projects.edit', compact('project'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, Project $project)
     {
-        //
+        $project->update($this->validateProject($request));
+
+        return redirect()->route('projects.show', $project);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Project $project)
     {
-        //
+        $project->delete();
+
+        return redirect()->route('projects.index');
+    }
+
+    private function validateProject(Request $request): array
+    {
+        return $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'deadline' => 'nullable|date',
+            'status' => 'required|in:pendiente,en curso,completado',
+        ]);
     }
 }
