@@ -21,7 +21,7 @@ class ProjectParticipantController extends Controller
             $validated['user_id'] => ['role' => $validated['role']],
         ]);
 
-        return redirect()->route('projects.show', $project);
+        return redirect()->route('projects.show', $project)->with('status', 'Participante añadido.');
     }
 
     public function update(Request $request, Project $project, User $participant)
@@ -34,7 +34,7 @@ class ProjectParticipantController extends Controller
 
         $project->participants()->updateExistingPivot($participant->id, $validated);
 
-        return redirect()->route('projects.show', $project);
+        return redirect()->route('projects.show', $project)->with('status', 'Participante actualizado.');
     }
 
     public function destroy(Project $project, User $participant)
@@ -42,6 +42,6 @@ class ProjectParticipantController extends Controller
         Gate::authorize('update', $project);
         $project->participants()->detach($participant->id);
 
-        return redirect()->route('projects.show', $project);
+        return redirect()->route('projects.show', $project)->with('status', 'Participante eliminado.');
     }
 }

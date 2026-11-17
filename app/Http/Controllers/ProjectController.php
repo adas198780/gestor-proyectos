@@ -28,7 +28,7 @@ class ProjectController extends Controller
     {
         $request->user()->ownedProjects()->create($this->validateProject($request));
 
-        return redirect()->route('projects.index');
+        return redirect()->route('projects.index')->with('status', 'Proyecto creado.');
     }
 
     /**
@@ -58,7 +58,7 @@ public function show(Project $project)
 
         $project->update($this->validateProject($request));
 
-        return redirect()->route('projects.show', $project);
+        return redirect()->route('projects.show', $project)->with('status', 'Proyecto actualizado.');
     }
 
     public function destroy(Project $project)
@@ -67,7 +67,7 @@ public function show(Project $project)
         Gate::authorize('delete', $project);
         $project->delete();
 
-        return redirect()->route('projects.index');
+        return redirect()->route('projects.index')->with('status', 'Proyecto eliminado.');
     }
 
     private function validateProject(Request $request): array
